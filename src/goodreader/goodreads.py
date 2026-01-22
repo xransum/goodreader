@@ -15,7 +15,7 @@ RATINGS_COUNT_RE = re.compile(r"([0-9][0-9,]*)\s+ratings", re.IGNORECASE)
 PUBLISHED_YEAR_RE = re.compile(r"published\s+(\d{4})", re.IGNORECASE)
 
 
-class Goodreads:
+class GoodreadsClient:
     """Goodreads API wrapper."""
 
     BASE_URL = "https://www.goodreads.com"

@@ -29,11 +29,32 @@ pip install goodreader
 
 ## Usage
 
-Goodreader's usage looks like:
+Once installed, you can use the Goodreader command-line interface with the following commands:
 
-```bash
-goodreader [OPTIONS]
-```
+1. **Search for items by keyword:**
+   ```bash
+   goodreader search <keyword>
+   ```
+
+2. **List all available genres:**
+   ```bash
+   goodreader genres
+   ```
+
+3. **Get details about a specific genre:**
+   ```bash
+   goodreader genre <keyword>
+   ```
+
+4. **Search for items by author:**
+   ```bash
+   goodreader author <keyword>
+   ```
+
+5. **Retrieve information based on ISBN:**
+   ```bash
+   goodreader isbn <isbn-id>
+   ```
 
 For usage instructions, please refer to the [Usage][usage] documentation.
 

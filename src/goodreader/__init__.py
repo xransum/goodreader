@@ -1,4 +1,4 @@
-"""Init file for the package."""
+"""Initialize the goodreader package."""
 
 import logging
 
