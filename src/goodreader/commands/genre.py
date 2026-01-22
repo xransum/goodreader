@@ -42,9 +42,9 @@ def _rank_genre_matches(
     return scored
 
 
-def genre_command(keyword: str) -> None:
+def genre_command(keyword: str, *, use_cache: bool = True) -> None:
     """Show details for a specific genre (with fuzzy matching)."""
-    genres = goodread.get_genres()  # expected to be slugs (per genres.py)
+    genres = goodread.get_genres()  # expected to be slugs
     if not genres:
         print("No genres available.")
         return
@@ -86,11 +86,9 @@ def genre_command(keyword: str) -> None:
             if choice is None:
                 return
 
-            # Map back from the rendered string to the slug
             picked_index = titles.index(choice)
             chosen = suggestions[picked_index][0]
 
-    # From here on, we always have a chosen genre (unless user aborted above).
     assert chosen is not None
 
     titled_genre = slug_to_title(chosen)
@@ -99,13 +97,19 @@ def genre_command(keyword: str) -> None:
     else:
         print(f"Selected genre: {titled_genre}")
 
-    # Continue with the rest command logic here.
+    books = goodread.get_books_for_genre(chosen, use_cache=use_cache)
+    print(f"Found {len(books)} books in genre '{titled_genre}'.")
+
+    # Paginate and display books titles
+    if books:
+        print(books[0])
 
 
-def execute(keyword: str) -> None:
+def execute(keyword: str, *, use_cache: bool = True) -> None:
     """CLI entry point for the standalone ``genre`` command module.
 
     Args:
         keyword: Genre name (or partial name) to search for.
+        use_cache: If False, bypass cached genres list and cached books-for-genre results.
     """
-    genre_command(keyword)
+    genre_command(keyword, use_cache=use_cache)

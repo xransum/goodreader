@@ -26,19 +26,12 @@ def get_book_info_by_isbn(isbn_id: str) -> None:
     # For example, querying a database or an external API
 
 
-def main(isbn_id: str) -> None:
+def execute(isbn_id: str) -> None:
     """CLI entry point for the standalone ``isbn`` command module.
 
     Args:
         isbn_id: ISBN identifier provided by the user.
+
+    Dispatches to :func:`get_book_info_by_isbn` with the provided ISBN.
     """
     get_book_info_by_isbn(isbn_id)
-
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 2:
-        print("Usage: goodreader isbn <isbn-id>")
-    else:
-        main(sys.argv[1])

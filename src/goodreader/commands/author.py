@@ -25,21 +25,12 @@ def search_author(keyword: str) -> None:
     # Here you would implement the actual search logic, possibly querying a database or an API
 
 
-def main() -> None:
+def execute(keyword: str) -> None:
     """CLI entry point for the standalone ``author`` command module.
 
-    Parses command-line arguments and dispatches to :func:`search_author`.
+    Args:
+        keyword: Author name or keyword provided by the user.
+
+    Dispatches to :func:`search_author` with the provided keyword.
     """
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Goodreader Author Command")
-    parser.add_argument(
-        "keyword", type=str, help="The name of the author to search for"
-    )
-    args = parser.parse_args()
-
-    search_author(args.keyword)
-
-
-if __name__ == "__main__":
-    main()
+    search_author(keyword)

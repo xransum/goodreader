@@ -31,3 +31,14 @@ def search(keyword: str) -> None:
     ]  # Placeholder for actual search results
     for result in results:
         print(result)
+
+
+def execute(keyword: str) -> None:
+    """CLI entry point for the standalone ``search`` command module.
+
+    Args:
+        keyword: Search term provided by the user.
+
+    Dispatches to :func:`search` with the provided keyword.
+    """
+    search(keyword)

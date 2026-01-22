@@ -13,10 +13,11 @@ import os
 import re
 import time
 import urllib.parse
-import urllib.request
 from typing import Any, Dict, Optional
 
+import requests
 from bs4 import BeautifulSoup
+from fake_headers import Headers
 
 from goodreader.constants import ALLOWED_SCHEMES, DEFAULT_HEADERS
 
@@ -149,43 +150,50 @@ def title_to_slug(value: str) -> str:
 def get_request(
     url: str,
     params: Optional[Dict[str, str]] = None,
-) -> Any:
-    """Perform an HTTP GET request and return the response body.
+    *,
+    timeout_seconds: float = 20.0,
+) -> str:
+    """Perform an HTTP GET request and return the response body as text.
 
     The URL scheme is validated against :data:`goodreader.constants.ALLOWED_SCHEMES`.
 
     Args:
         url: Base URL to request.
         params: Optional query parameters to be URL-encoded and appended.
+        timeout_seconds: Request timeout in seconds.
 
     Returns:
-        Raw response body bytes as returned by ``urllib.request.urlopen(...).read()``.
+        Response body decoded as text.
 
     Raises:
         ValueError: If ``url`` is empty or the URL scheme is not allowed.
-        urllib.error.URLError: If the request fails (DNS, connection, etc.).
-        urllib.error.HTTPError: For HTTP errors (non-2xx).
+        requests.RequestException: For network/HTTP errors.
     """
     if not url:
         raise ValueError("URL cannot be empty.")
 
-    # Construct the full URL with query parameters
-    full_url = url
-    if params is not None:
-        full_url = f"{url}?{urllib.parse.urlencode(params)}"
-
-    # Parse the URL to validate the scheme
-    parsed = urllib.parse.urlparse(full_url)
+    # Validate scheme using the base url (params are handled by requests)
+    parsed = urllib.parse.urlparse(url)
     if parsed.scheme not in ALLOWED_SCHEMES:
         raise ValueError(
             f"Invalid URL scheme {parsed.scheme!r}. "
             f"Allowed schemes are: {', '.join(ALLOWED_SCHEMES)}"
         )
 
-    # Create the request
-    headers = DEFAULT_HEADERS
-    req = urllib.request.Request(full_url, headers=headers)
-    return urllib.request.urlopen(req).read()
+    header = Headers(headers=False)
+    resp = requests.get(
+        url,
+        params=params,
+        headers=header.generate(),  # dict(DEFAULT_HEADERS)
+        timeout=timeout_seconds,
+    )
+    resp.raise_for_status()
+
+    # Ensure correct decoding. requests uses charset from headers; fallback to apparent.
+    if resp.encoding is None:
+        resp.encoding = resp.apparent_encoding
+
+    return resp.text
 
 
 def soupify(html_content: str) -> BeautifulSoup:

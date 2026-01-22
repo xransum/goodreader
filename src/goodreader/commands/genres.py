@@ -18,15 +18,13 @@ goodread = GoodreadsClient()
 page_size = 20
 
 
-def list_genres() -> None:
+def list_genres(*, use_cache: bool = True) -> None:
     """List available genres and print them to stdout.
 
-    Notes:
-        This is currently a placeholder implementation that uses a hard-coded
-        list. A real implementation would likely fetch genres from a remote
-        service or a local dataset.
+    Args:
+        use_cache: If False, bypass any cached genre list and fetch fresh data.
     """
-    genres = goodread.get_genres()
+    genres = goodread.get_genres(use_cache=use_cache)
     titled_genres = [slug_to_title(g) for g in genres]
 
     choice = paginate(
@@ -43,6 +41,6 @@ def list_genres() -> None:
     # as there are thousands of genres
 
 
-def execute() -> None:
+def execute(*, use_cache: bool = True) -> None:
     """CLI entry point for the standalone ``genres`` command module."""
-    list_genres()
+    list_genres(use_cache=use_cache)
